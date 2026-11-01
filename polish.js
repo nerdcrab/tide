@@ -1,0 +1,25 @@
+// Conversation history stays in this browser, including attached images.
+let historyDB,historyId=crypto.randomUUID(),historyReady=false,historyTimer;
+const historyOpen=new Promise((resolve,reject)=>{const r=indexedDB.open('tide-chat',1);r.onupgradeneeded=()=>r.result.createObjectStore('conversations',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});
+function historyRequest(mode,action){return new Promise((resolve,reject)=>{const tx=historyDB.transaction('conversations',mode),r=action(tx.objectStore('conversations'));tx.oncomplete=()=>resolve(r.result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error)})}
+async function saveConversation(){if(!historyReady||chatBusy||!chatMessages.length)return;const row={id:historyId,title:chatMessages.find(m=>m.role==='user')?.content.slice(0,65)||'Chat',updated:Date.now(),messages:structuredClone(chatMessages)};try{await historyRequest('readwrite',s=>s.put(row));await drawHistoryPicker()}catch{toast('Could not save this chat. Browser storage may be full.')}}
+async function drawHistoryPicker(){const select=document.getElementById('chat-history');if(!select||!historyReady)return;try{const rows=await historyRequest('readonly',s=>s.getAll());if(!select.isConnected)return;select.replaceChildren(new Option('Saved chats', ''));rows.sort((a,b)=>b.updated-a.updated).forEach(row=>select.add(new Option(row.title,row.id)));select.value=rows.some(r=>r.id===historyId)?historyId:'';document.getElementById('delete-chat').disabled=!select.value||chatBusy}catch{}}
+const unsavedChatPage=chatPage;
+chatPage=function(){return unsavedChatPage().replace('<button class="chip" data-chat-action="new">','<div class="chat-tools"><select id="chat-history" class="chip" aria-label="Saved chats"><option value="">Saved chats</option></select><button id="delete-chat" class="icon-btn" data-history-delete aria-label="Delete current chat" disabled>'+icon('trash')+'</button><button class="chip" data-chat-action="new">').replace('New chat</button></header>','New chat</button></div></header>')};
+const unsavedDrawChat=drawChat;
+drawChat=function(){unsavedDrawChat();clearTimeout(historyTimer);if(historyReady&&!chatBusy)historyTimer=setTimeout(saveConversation,100);drawHistoryPicker()};
+document.addEventListener('click',e=>{if(!e.target.closest('[data-chat-action="new"]')||chatBusy||chatImageBusy)return;clearTimeout(historyTimer);saveConversation();historyId=crypto.randomUUID()},true);
+document.addEventListener('change',async e=>{if(e.target.id!=='chat-history'||!e.target.value)return;const selectedId=e.target.value;if(chatBusy||chatImageBusy){toast('Stop the current reply first.');drawHistoryPicker();return}clearTimeout(historyTimer);await saveConversation();try{const row=await historyRequest('readonly',s=>s.get(selectedId));if(!row)return;historyId=row.id;chatMessages=row.messages;chatDraft='';chatError='';chatAttachment=null;drawChat()}catch{toast('Could not open this chat.')}});
+document.addEventListener('click',async e=>{if(!e.target.closest('[data-history-delete]')||chatBusy||chatImageBusy)return;clearTimeout(historyTimer);try{await historyRequest('readwrite',s=>s.delete(historyId));historyId=crypto.randomUUID();chatMessages=[];chatDraft='';chatError='';chatAttachment=null;drawChat()}catch{toast('Could not delete this chat.')}});
+historyOpen.then(async db=>{historyDB=db;const rows=await historyRequest('readonly',s=>s.getAll());rows.sort((a,b)=>b.updated-a.updated);if(rows.length&&!chatMessages.length&&!chatBusy){historyId=rows[0].id;chatMessages=rows[0].messages}historyReady=true;if(page()==='chat'){document.getElementById('content').innerHTML=chatPage();drawChat()}}).catch(()=>{toast('Chat history is unavailable in this browser.');historyReady=false});
+
+let homeRow=read('home-row','featured');
+function drawHomeRow(){const host=document.getElementById('home-games');if(!host)return;const items=homeRow==='recent'?recent.map(id=>GAMES.find(g=>g.id===id)).filter(Boolean).slice(0,6):GAMES.slice(0,6);host.innerHTML=items.length?cards(items,true):'<p class="empty">Your recently played games will appear here.</p>';document.querySelectorAll('[data-home-row]').forEach(b=>{const selected=b.dataset.homeRow===homeRow;b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected))})}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-home-row]');if(!b)return;homeRow=b.dataset.homeRow;save('home-row',homeRow);drawHomeRow()});
+const unpolishedRender=render;
+render=function(){unpolishedRender();drawHomeRow();scheduleFlow()};
+window.removeEventListener('hashchange',unpolishedRender);window.addEventListener('hashchange',render);
+
+// Keep controls visible when a mobile keyboard reduces the visual viewport.
+function fitChatViewport(){const v=window.visualViewport;document.documentElement.style.setProperty('--visible-height',(v?v.height:innerHeight)+'px')}
+window.visualViewport?.addEventListener('resize',fitChatViewport);window.addEventListener('resize',fitChatViewport);fitChatViewport();render();
