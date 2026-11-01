@@ -11,13 +11,13 @@ Publish the `main` branch root with GitHub Pages. Relative asset paths and a sco
 - `index.html`, `style.css`, `app.js` — interface and interactions
 - `themes.js` — eight complete palettes
 - `logos.js`, `logo.png`, `covers-*.webp` — locally hosted app logos, Tide logo and game cover atlases
-- `data.js` — 240 deduplicated HTML game entries
+- `data.js` — 1,926 HTML game entries with local thumbnails
 - `proxy.js`, `sw.js` — browser setup and service worker
 - `scramjet.*`, `baremux*`, `libcurl.mjs` — proxy client dependencies
 
 The browser uses Scramjet, BareMux and libcurl with the existing browser connection. App shortcuts open through the browser.
 
-Games are loaded from their original HTML sources online. Some HTML games fetch additional assets or emulator runtimes. HTML format alone does not guarantee compatibility or availability on any particular network. The repository includes the catalog and covers, not 240 offline game bundles.
+Games are loaded from their original HTML sources online. Some HTML games fetch additional assets or emulator runtimes. HTML format alone does not guarantee compatibility or availability on any particular network. The repository includes the catalog and covers, not offline game bundles.
 
 Favorites, recently played IDs and preferences stay in browser local storage. The flowing background respects reduced-motion and pauses in background tabs and during gameplay. The home game row switches between Featured and Recent.
 
