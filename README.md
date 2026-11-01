@@ -15,7 +15,7 @@ Publish the `main` branch root with GitHub Pages. Relative asset paths and a sco
 - `proxy.js`, `sw.js` — browser setup and service worker
 - `scramjet.*`, `baremux*`, `libcurl.mjs` — proxy client dependencies
 
-The browser client uses Scramjet, BareMux and libcurl. No server endpoint is included in this public draft; browsing is unavailable until a connection is configured.
+The browser uses Scramjet, BareMux and libcurl with the existing browser connection. App shortcuts open through the browser.
 
 Games are loaded from their original HTML sources online. Some HTML games fetch additional assets or emulator runtimes. HTML format alone does not guarantee compatibility or availability on any particular network. The repository includes the catalog and covers, not 240 offline game bundles.
 
