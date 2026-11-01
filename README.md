@@ -25,3 +25,9 @@ Favorites, recently played IDs and preferences stay in browser local storage. Th
 
 Game catalogs: Ultimate Game Stash and [GN Math](https://github.com/gn-math/html). App marks: [Simple Icons](https://simpleicons.org/). Games, cover artwork and brand marks belong to their respective owners; this repository does not grant rights to third-party assets. Proxy dependencies are copied from the existing Blizzard deployment with their distributed license notices intact.
 
+
+## AI chat
+
+Chat uses a server-side Cloudflare Pages Function and OpenRouter's free-model router. The API key belongs in the encrypted `OPENROUTER_API_KEY` production secret, never in these files. The Cloudflare deployment package includes `_worker.js` and `_routes.json`; the static mirrors use `https://tides.pages.dev/api/chat`.
+
+The backend fixes the model to `openrouter/free`, limits input and reply sizes, and applies a basic per-IP throttle in each Worker instance. This throttle is not a durable global quota. Provider free-model quotas still apply. Conversations stay in memory in the current tab and are sent to OpenRouter and its provider only when a message is sent.
