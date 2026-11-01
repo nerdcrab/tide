@@ -1,18 +1,26 @@
 # Tide
 
-First draft of Tide. Static HTML, CSS, JavaScript, and local image files; no build step or paid service is needed to host the interface.
+A static games and browser site. HTML, CSS, JavaScript and local artwork; no build step is needed for GitHub Pages.
+
+## Hosting
+
+Publish the `main` branch root with GitHub Pages. Relative asset paths and a scope-relative service worker support the `/tide/` project path. Open the HTTPS site, rather than a downloaded file, to use the browser.
 
 ## Files
 
-- `index.html` — page shell
-- `style.css` — layout, themes, responsive styles, hover/press effects
-- `app.js` — navigation, search, favorites, settings, game player
-- `data.js` — 240-game starter catalog
-- `logo.png` — original Tide wave mark
-- `covers-*.webp` — locally hosted cover atlases
+- `index.html`, `style.css`, `app.js` — interface and interactions
+- `themes.js` — eight complete palettes
+- `logos.js`, `logo.png`, `covers-*.webp` — locally hosted app logos, Tide logo and game cover atlases
+- `data.js` — 240 deduplicated HTML game entries
+- `proxy.js`, `sw.js` — browser setup and service worker
+- `scramjet.*`, `baremux*`, `libcurl.mjs` — proxy client dependencies
 
-Publish the `main` branch root with GitHub Pages. All site asset paths are relative so the site works under `/tide/`.
+The browser uses Scramjet, BareMux, libcurl and the existing Wisp endpoint `wss://d1ukzptnaw7ikb.cloudfront.net/wisp/`. It does not create a new server. App shortcuts open through the browser.
 
-Games load from their original online sources. URL entry and app shortcuts open websites directly in a new tab. This draft does not include a proxy client or Wisp integration. Favorites, recently played games, and appearance settings are saved in the browser.
+Games are loaded from their original HTML sources online. Some HTML games fetch additional assets or emulator runtimes. HTML format alone does not guarantee compatibility or availability on any particular network. The repository includes the catalog and covers, not 240 offline game bundles.
 
-Game sources: [Ultimate Game Stash](https://github.com/UGS-Assets) and [GN Math](https://github.com/gn-math/html). Games and artwork belong to their respective owners. The repository does not grant rights to third-party assets.
+Favorites, recently played IDs and preferences stay in browser local storage. The flowing background respects reduced-motion and pauses in background tabs.
+
+## Sources
+
+Game catalogs: Ultimate Game Stash and [GN Math](https://github.com/gn-math/html). App marks: [Simple Icons](https://simpleicons.org/). Games, cover artwork and brand marks belong to their respective owners; this repository does not grant rights to third-party assets. Proxy dependencies are copied from the existing Blizzard deployment with their distributed license notices intact.
