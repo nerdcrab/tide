@@ -9,7 +9,7 @@ Publish the `main` branch root with GitHub Pages. Relative asset paths and a sco
 ## Files
 
 - `index.html`, `style.css`, `app.js` — interface and interactions
-- `themes.js` — nine complete palettes
+- `themes.js` — nineteen complete themes
 - `logos.js`, `logo.png`, `covers-*.webp` — locally hosted app logos, Tide logo and game cover atlases
 - `data.js` — 1,926 HTML game entries with local thumbnails
 - `proxy.js`, `sw.js` — browser setup and service worker
@@ -19,7 +19,7 @@ The browser uses Scramjet, BareMux and libcurl with the existing browser connect
 
 Games are loaded from their original HTML sources online. Some HTML games fetch additional assets or emulator runtimes. HTML format alone does not guarantee compatibility or availability on any particular network. The repository includes the catalog and covers, not offline game bundles.
 
-Favorites, recently played IDs and preferences stay in browser local storage. Christmas adds a green, red, and gold palette with locally drawn snowfall. The background respects reduced-motion and pauses in background tabs and during gameplay. The home game row switches between Featured and Recent.
+Favorites, recently played IDs and preferences stay in browser local storage. Christmas adds a green, red, and gold palette with locally drawn snowfall. Ten additional themes include local wallpapers and matching motion: Chill Guy, Nyan Cat, Doge, Windows XP, DVD Screensaver, Minecraft, Backrooms, PS2, SpongeBob, and Bad Apple!!. See THEME-ART-CREDITS.md for artwork sources. The background respects reduced-motion and pauses in background tabs and during gameplay. The home game row switches between Featured and Recent.
 
 ## Sources
 
